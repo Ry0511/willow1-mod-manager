@@ -1,0 +1,7 @@
+.idea
+.vs
+
+bl1_commander/__pycache__
+console_mod_menu/__pycache__
+input_base/__pycache__
+mods_base/__pycache__
