@@ -33,7 +33,7 @@ class Game(Flag):
 
     @staticmethod
     @cache
-    def get_current() -> Literal[Game.BL2, Game.TPS, Game.AoDK, Game.BL3, Game.WL]:
+    def get_current() -> Literal[Game.BL1, Game.BL2, Game.TPS, Game.AoDK, Game.BL3, Game.WL]:
         """Gets the current game."""
 
         # As a bit of safety, we can use the architecture to limit which games are allowed
