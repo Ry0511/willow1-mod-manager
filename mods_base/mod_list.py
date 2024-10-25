@@ -96,16 +96,17 @@ MOD_DB_URL: str
 MOD_RELEASE_API_URL: str
 MOD_RELEASE_DOWNLOAD_URL: str
 
+# TODO: This will need more work.
 match Game.get_tree():
     case Game.Willow2:
         MOD_DB_URL = (  # pyright: ignore[reportConstantRedefinition]
-            "https://bl-sdk.github.io/willow2-mod-db/"
+            ""
         )
         MOD_RELEASE_API_URL = (  # pyright: ignore[reportConstantRedefinition]
-            "https://api.github.com/repos/bl-sdk/willow2-mod-manager/releases/latest"
+            ""
         )
         MOD_RELEASE_DOWNLOAD_URL = (  # pyright: ignore[reportConstantRedefinition]
-            "https://github.com/bl-sdk/willow2-mod-manager/releases/"
+            ""
         )
     case Game.Oak:
         MOD_DB_URL = (  # pyright: ignore[reportConstantRedefinition]
