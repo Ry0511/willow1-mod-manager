@@ -38,6 +38,8 @@ def on_player_input(
     global _keys_pressed_this_frame
     global _pressed_keys_prop
 
+    _keys_pressed_this_frame.clear()
+
     if _pressed_keys_prop is None:
         _pressed_keys_prop = obj.Class._find_prop("PressedKeys")
 
@@ -45,7 +47,6 @@ def on_player_input(
     if keys is None or len(keys) <= 0:
         return
 
-    _keys_pressed_this_frame.clear()
     for i in range(0, len(keys)):
         _keys_pressed_this_frame.append(keys[i].__str__())
 
