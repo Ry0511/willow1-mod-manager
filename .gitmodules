@@ -1,0 +1,6 @@
+[submodule "src/console_mod_menu"]
+	path = src/console_mod_menu
+	url = https://github.com/bl-sdk/console_mod_menu
+[submodule "src/mods_base"]
+	path = src/mods_base
+	url = https://github.com/Ry0511/mods_base
