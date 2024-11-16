@@ -8,9 +8,9 @@ from zipfile import ZIP_DEFLATED, ZipFile
 # files but which are still useful.
 #
 
-__version__: str = "1.0.0"
-__author__: str = "bl1sdk"
-__zip_file__: str = f"PythonSDK-{__version__}.zip"
+__version__: str
+__author__: str
+__zip_file__: str
 __exclude_paths__: list[str] = ["unrealsdk", "pyunrealsdk"]
 
 
@@ -84,6 +84,7 @@ def package_release(args: argparse.Namespace):
 
 if __name__ == "__main__":
     import traceback
+    import tomllib
     from argparse import ArgumentParser
 
     parser = ArgumentParser(description="Prepares a .zip release")
@@ -114,6 +115,17 @@ if __name__ == "__main__":
         default=False,
     )
     args: argparse.Namespace = parser.parse_args()
+
+    # Load toml info
+    with open(__file__.replace(".py", ".toml"), 'rb') as f:
+        data = tomllib.load(f)
+        __version__ = data["Project"]["version"]
+        __author__ = data["Project"]["author"]
+
+        if args.include_hidden:
+            __zip_file__ = f"PythonSDK-Dev-{__version__}.zip"
+        else:
+            __zip_file__ = f"PythonSDK-{__version__}.zip"
 
     try:
         package_release(args)
