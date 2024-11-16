@@ -41,8 +41,8 @@ def package_release(args: argparse.Namespace):
     sdk_build_dir = args.sdk_build_dir
     plugin_native_dll = args.plugins_native_dll
 
-    PLUGINS_DIR = os.path.join("Binaries", "Plugins")
-    MODS_DIR = os.path.join("Mods")
+    ZIP_PLUGINS_DIR = os.path.join("Binaries", "Plugins")
+    ZIP_MODS_DIR = os.path.join("Mods")
 
     with ZipFile(str(zip_out_path), "w", ZIP_DEFLATED, compresslevel=9) as zip_file:
 
@@ -52,29 +52,30 @@ def package_release(args: argparse.Namespace):
             if not args.include_hidden and any(p in root_path_parts for p in __exclude_paths__):
                 continue
 
-            for file in files:
+            for file in files:  # Installed into ./Mods/
                 abs_file_path = os.path.join(root, file)
                 src_rel_file_path = os.path.relpath(abs_file_path, file_dir)
-                mods_rel_path = os.path.join("Mods", os.path.relpath(src_rel_file_path, "src"))
+                mods_rel_path = os.path.join(ZIP_MODS_DIR, os.path.relpath(src_rel_file_path, "src"))
                 zip_file.write(abs_file_path, arcname=mods_rel_path)
 
-        # Copy SDK Build Files (Mirrors input directory)
+        # Copy SDK Build Files (Mirrors input directory); Installed into ./Binaries/Plugins
         for root, _, files in os.walk(sdk_build_dir):
             for file in files:
                 abs_file_path = os.path.join(root, file)
                 rel_file_path = os.path.relpath(str(abs_file_path), sdk_build_dir)
-                plugin_rel_path = os.path.join(PLUGINS_DIR, str(rel_file_path))
+                plugin_rel_path = os.path.join(ZIP_PLUGINS_DIR, str(rel_file_path))
                 zip_file.write(str(abs_file_path), arcname=plugin_rel_path)
 
         # https://github.com/Ry0511/plugin_loader (apple1417's doesn't work here)
+        # Installed into ./Binaries/
         native_out_path = os.path.join("Binaries", os.path.basename(plugin_native_dll))
         zip_file.write(plugin_native_dll, arcname=native_out_path)
 
-        # Environment File (optional)
+        # Environment File (optional); Installed into ./Binaries/Plugins
         ENV_FILE_NAME = "unrealsdk.env"
         env_file = os.path.join(file_dir, ENV_FILE_NAME)
         if os.path.isfile(env_file):
-            zip_file.write(env_file, arcname=os.path.join(PLUGINS_DIR, ENV_FILE_NAME))
+            zip_file.write(env_file, arcname=os.path.join(ZIP_PLUGINS_DIR, ENV_FILE_NAME))
 
 
 ################################################################################
