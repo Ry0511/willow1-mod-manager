@@ -4,6 +4,5 @@
 src/**/__pycache__
 
 # These are 'hidden' and always available; Having them for IDE support.
-build/
 src/pyunrealsdk/
 src/unrealsdk/
