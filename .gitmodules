@@ -7,3 +7,6 @@
 [submodule "vendor/pyunrealsdk"]
 	path = vendor/pyunrealsdk
 	url = https://github.com/Ry0511/pyunrealsdk
+[submodule "vendor/plugin_loader"]
+	path = vendor/plugin_loader
+	url = https://github.com/Ry0511/plugin_loader
