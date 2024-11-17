@@ -4,3 +4,6 @@
 [submodule "src/mods_base"]
 	path = src/mods_base
 	url = https://github.com/Ry0511/mods_base
+[submodule "vendor/pyunrealsdk"]
+	path = vendor/pyunrealsdk
+	url = https://github.com/Ry0511/pyunrealsdk
