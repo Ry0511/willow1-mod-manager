@@ -25,6 +25,14 @@ add_custom_target(${PROJECT_NAME})
 add_dependencies(${PROJECT_NAME} proxy_dsound pyunrealsdk)
 
 install(TARGETS proxy_dsound RUNTIME DESTINATION ${WMM_INSTALL_ROOT}/Binaries)
+install(
+        DIRECTORY ./vendor/pyunrealsdk/stubs/pyunrealsdk
+        DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
+install(
+        DIRECTORY ./vendor/pyunrealsdk/stubs/unrealsdk
+        DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
 install(FILES "unrealsdk.env" DESTINATION ${WMM_INSTALL_ROOT}/Binaries/Plugins)
 
 # This assumes the directory structure for the sdk-install-dir is the required i.e., Binaries/Plugins
