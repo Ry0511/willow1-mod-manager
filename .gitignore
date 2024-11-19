@@ -2,6 +2,7 @@
 .vscode
 
 src/**/__pycache__
+out/
 
 # These are 'hidden' and always available; Having them for IDE support.
 src/pyunrealsdk/
