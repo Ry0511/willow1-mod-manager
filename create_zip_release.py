@@ -117,6 +117,7 @@ if __name__ == "__main__":
     ZIP_FILE_NAME = f"PythonSDK{BUILD_TYPE.file_prefix()}-{VERSION}.zip"
     ZIP_FILE_OUT = path.join(OUTPUT_DIR, ZIP_FILE_NAME)
 
+    print("\n[CONFIGURATION]")
     print(f"VERSION        : {VERSION}")
     print(f"BUILD_TYPE     : {BUILD_TYPE}")
     print(f"OUTPUT_DIR     : {OUTPUT_DIR}")
@@ -125,7 +126,7 @@ if __name__ == "__main__":
     print(f"ZIP_FILE_NAME  : {ZIP_FILE_NAME}")
     print(f"ZIP_FILE_OUT   : {ZIP_FILE_OUT}")
 
-    print("\n[PACKAGING RELEASE]")
-    print(OUTPUT_DIR)
     package_release()
-    print(ZIP_FILE_OUT)
+    zip_stats = os.stat(ZIP_FILE_OUT)
+    zip_size = zip_stats.st_size / (1024 * 1024)
+    print(f"Packaged zip release ({zip_size:.2f}mb)")
