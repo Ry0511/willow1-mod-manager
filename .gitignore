@@ -2,6 +2,7 @@
 .vscode
 
 src/**/__pycache__
+src/**/*.pyd
 out/
 
 # These are 'hidden' and always available; Having them for IDE support.
