@@ -50,6 +50,29 @@ install( # Install contents excluding some file types since
         PATTERN ".github" EXCLUDE
 )
 
+option(WMM_INSTALL_STUBS "Installs the stubs for implicit/builtin libraries" ON)
+
+if (WMM_INSTALL_STUBS)
+    install( # Install stubs into install directory
+            DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/vendor/pyunrealsdk/stubs/"
+            DESTINATION "${WMM_INSTALL_ROOT}/Mods/"
+            PATTERN ".idea" EXCLUDE
+            PATTERN ".git" EXCLUDE
+            PATTERN ".gitignore" EXCLUDE
+            PATTERN ".github" EXCLUDE
+            PATTERN "Readme.*" EXCLUDE
+    )
+    install( # Install stubs into source directory; only used to resolve references for internal mods
+            DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/vendor/pyunrealsdk/stubs/"
+            DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/src/"
+            PATTERN ".idea" EXCLUDE
+            PATTERN ".git" EXCLUDE
+            PATTERN ".gitignore" EXCLUDE
+            PATTERN ".github" EXCLUDE
+            PATTERN "Readme.*" EXCLUDE
+    )
+endif ()
+
 # This assumes the directory structure for the sdk-install-dir is the required i.e., Binaries/Plugins
 find_package(Python3 REQUIRED)
 add_custom_target(
