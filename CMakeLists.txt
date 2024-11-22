@@ -14,9 +14,15 @@ add_subdirectory(./vendor/pyunrealsdk)
 # Need to exclude this since we don't want its install dependencies
 add_subdirectory(./vendor/plugin_loader EXCLUDE_FROM_ALL)
 
+pyunrealsdk_add_module(_input_base src/input_base/_input_base.cpp)
+install(TARGETS _input_base DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/input_base)
+
 ################################################################################
-# CUSTOM BUILD TARGET
+# PACKAGING MOD MANAGER
 ################################################################################
+
+# Honestly, might be a better idea to avoid the install stuff and just have a build target which
+#  packages everything we need. Then just give that to the packager script.
 
 # Relative to: '../${presetName}/Binaries/Plugins'
 set(WMM_INSTALL_ROOT "${CMAKE_INSTALL_PREFIX}/../../")
