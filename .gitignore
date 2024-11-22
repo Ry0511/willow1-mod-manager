@@ -1,6 +1,8 @@
+.vs
 .idea
 .vscode
 
+src/.idea/
 src/**/__pycache__
 src/**/*.pyd
 out/
