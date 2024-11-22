@@ -3,7 +3,7 @@ from enum import Enum
 import os
 from os import path
 from typing import AnyStr
-from zipfile import ZipFile, ZIP_DEFLATED
+from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
 
 
 class BuildType(Enum):
@@ -84,7 +84,8 @@ def package_dir_into_zip(
 
 
 def package_release():
-    with ZipFile(ZIP_FILE_OUT, "w", ZIP_DEFLATED, compresslevel=9) as zip_file:
+    compression = ZIP_DEFLATED if BUILD_TYPE is not BuildType.Debug else ZIP_STORED
+    with ZipFile(ZIP_FILE_OUT, "w", compression, compresslevel=9) as zip_file:
         package_dir_into_zip(MODS_DIR, zip_file, base_path="Mods")
         package_dir_into_zip(SDK_INSTALL_DIR, zip_file)
 
