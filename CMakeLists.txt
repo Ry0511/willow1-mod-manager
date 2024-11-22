@@ -9,13 +9,16 @@ project(
 # DEPENDENCIES
 ################################################################################
 
+# Default install directory is install/Binaries/Plugins
+set(WMM_INSTALL_ROOT "${CMAKE_INSTALL_PREFIX}/../../")
+
 add_subdirectory(./vendor/pyunrealsdk)
 
 # Need to exclude this since we don't want its install dependencies
 add_subdirectory(./vendor/plugin_loader EXCLUDE_FROM_ALL)
 
 pyunrealsdk_add_module(_input_base src/input_base/_input_base.cpp)
-install(TARGETS _input_base DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/input_base)
+install(TARGETS _input_base DESTINATION ${WMM_INSTALL_ROOT}/Mods/input_base)
 
 ################################################################################
 # PACKAGING MOD MANAGER
@@ -23,9 +26,6 @@ install(TARGETS _input_base DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/src/input_ba
 
 # Honestly, might be a better idea to avoid the install stuff and just have a build target which
 #  packages everything we need. Then just give that to the packager script.
-
-# Relative to: '../${presetName}/Binaries/Plugins'
-set(WMM_INSTALL_ROOT "${CMAKE_INSTALL_PREFIX}/../../")
 
 add_custom_target(${PROJECT_NAME})
 add_dependencies(${PROJECT_NAME} proxy_dsound pyunrealsdk)
@@ -41,6 +41,15 @@ install(
 )
 install(FILES "unrealsdk.env" DESTINATION ${WMM_INSTALL_ROOT}/Binaries/Plugins)
 
+install( # Install contents excluding some file types since
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/
+        DESTINATION ${WMM_INSTALL_ROOT}/Mods
+        PATTERN ".idea" EXCLUDE
+        PATTERN ".git" EXCLUDE
+        PATTERN ".gitignore" EXCLUDE
+        PATTERN ".github" EXCLUDE
+)
+
 # This assumes the directory structure for the sdk-install-dir is the required i.e., Binaries/Plugins
 find_package(Python3 REQUIRED)
 add_custom_target(
@@ -50,8 +59,7 @@ add_custom_target(
         ./create_zip_release.py
         # The literal quotes are not actually required.
         --version "\"${CMAKE_PROJECT_VERSION}\""
-        --sdk-install-dir "\"${WMM_INSTALL_ROOT}\""
-        --mods-dir "\"${CMAKE_CURRENT_SOURCE_DIR}/src\""
+        --install-dir "\"${WMM_INSTALL_ROOT}\""
         --build-type "\"${CMAKE_BUILD_TYPE}\""
         --output-dir "\"${CMAKE_CURRENT_SOURCE_DIR}/build\""
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"

@@ -57,8 +57,7 @@ def parse_build_type(build_type: str) -> BuildType:
 VERSION: str
 BUILD_TYPE: BuildType
 OUTPUT_DIR: str
-MODS_DIR: str
-SDK_INSTALL_DIR: str
+INSTALL_DIR: str
 ZIP_FILE_NAME: str
 ZIP_FILE_OUT: str
 
@@ -86,8 +85,7 @@ def package_dir_into_zip(
 def package_release():
     compression = ZIP_DEFLATED if BUILD_TYPE is not BuildType.Debug else ZIP_STORED
     with ZipFile(ZIP_FILE_OUT, "w", compression, compresslevel=9) as zip_file:
-        package_dir_into_zip(MODS_DIR, zip_file, base_path="Mods")
-        package_dir_into_zip(SDK_INSTALL_DIR, zip_file)
+        package_dir_into_zip(INSTALL_DIR, zip_file)
 
 
 ################################################################################
@@ -97,10 +95,11 @@ def package_release():
 if __name__ == "__main__":
     from argparse import ArgumentParser
 
+    # Contents of install dir are embedded as is into the zip file.
+
     parser = ArgumentParser(description="Prepares a .zip release")
     parser.add_argument("--version", required=True)
-    parser.add_argument("--sdk-install-dir", type=dir_not_empty, required=True)
-    parser.add_argument("--mods-dir", type=dir_not_empty, required=True)
+    parser.add_argument("--install-dir", type=dir_not_empty, required=True)
     parser.add_argument("--build-type", type=parse_build_type, required=True)
     parser.add_argument("--output-dir", type=dir_exists, required=True)
 
@@ -113,8 +112,7 @@ if __name__ == "__main__":
     VERSION = args.version
     BUILD_TYPE = args.build_type
     OUTPUT_DIR = args.output_dir
-    MODS_DIR = args.mods_dir
-    SDK_INSTALL_DIR = args.sdk_install_dir
+    INSTALL_DIR = args.install_dir
     ZIP_FILE_NAME = f"PythonSDK{BUILD_TYPE.file_prefix()}-{VERSION}.zip"
     ZIP_FILE_OUT = path.join(OUTPUT_DIR, ZIP_FILE_NAME)
 
@@ -122,8 +120,7 @@ if __name__ == "__main__":
     print(f"VERSION        : {VERSION}")
     print(f"BUILD_TYPE     : {BUILD_TYPE}")
     print(f"OUTPUT_DIR     : {OUTPUT_DIR}")
-    print(f"MODS_DIR       : {MODS_DIR}")
-    print(f"SDK_INSTALL_DIR: {SDK_INSTALL_DIR}")
+    print(f"SDK_INSTALL_DIR: {INSTALL_DIR}")
     print(f"ZIP_FILE_NAME  : {ZIP_FILE_NAME}")
     print(f"ZIP_FILE_OUT   : {ZIP_FILE_OUT}")
 
