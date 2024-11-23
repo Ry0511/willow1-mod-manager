@@ -4,21 +4,16 @@
 // Author     : -Ry
 //
 
-#include <unrealsdk/unreal/classes/properties/uboolproperty.h>
 #include "pyunrealsdk/pch.h"
 #include "pyunrealsdk/static_py_object.h"
 #include "pyunrealsdk/unreal_bindings/uenum.h"
-#include "pyunrealsdk/hooks.h"
 
 #include "unrealsdk/memory.h"
 #include "unrealsdk/unrealsdk.h"
 #include "unrealsdk/hook_manager.h"
-#include "unrealsdk/unreal/structs/fname.h"
-#include "unrealsdk/unreal/wrappers/gobjects.h"
-#include "unrealsdk/unreal/wrappers/wrapped_array.h"
-#include "unrealsdk/unreal/wrappers/property_proxy.h"
+#include "unrealsdk/unreal/class_name.h"
+#include "unrealsdk/unreal/classes/properties/uboolproperty.h"
 #include "unrealsdk/unreal/classes/properties/ubyteproperty.h"
-#include "unrealsdk/unreal/classes/properties/uarrayproperty.h"
 
 namespace keybinds {
 
@@ -27,6 +22,12 @@ using namespace unrealsdk::unreal;
 using namespace unrealsdk::memory;
 
 using EInputEvent = PropTraits<UByteProperty>::Value;
+constexpr EInputEvent IE_Pressed = 0;
+constexpr EInputEvent IE_Released = 1;
+constexpr EInputEvent IE_Repeat = 2;
+constexpr EInputEvent IE_DoubleClick = 3;
+constexpr EInputEvent IE_Axis = 4;
+constexpr EInputEvent IE_MAX = 5;
 
 struct PY_OBJECT_VISIBILITY KeybindInfo {
     pyunrealsdk::StaticPyObject callback;
@@ -65,24 +66,17 @@ bool hook_on_gameplay_input(hook_manager::Details& hook) {
 
 namespace {
 
-Pattern<80> INPUT_FUN_SIG{ // Not going to format this just yet; 0x00513E40
-        "83 EC 1C 8B 44 24 20 8B 54 24 24 89 04 24 8B 44 24 28 F3 0F 10 44 24 30 89 44 24 08 33"
-        "C0 39 44 24 34 6A 00 0F 95 C0 89 54 24 08 8A 54 24 30 88 54 24 10 8B 11 8B 92 F4 00 00"
-        "00 C7 44 24 1C 00 00 00 00 89 44 24 18 8D 44 24 04 50 8D 41 3C 50"
-};
-
-// RET 0x1C (28b); 4 bytes extra for the return address
-typedef void* (__fastcall* input_func)(
+typedef void* (__fastcall* on_input_event_func)(
         UObject* ecx,
         void* edx,
         PropTraits<UIntProperty>::Value controller,
-        FName key,
-        EInputEvent event,
+        PropTraits<UNameProperty>::Value key,
+        PropTraits<UByteProperty>::Value event,
         PropTraits<UFloatProperty>::Value amount_depressed,
         PropTraits<UBoolProperty>::Value is_gamepad
 );
 
-input_func input_func_ptr{nullptr};
+on_input_event_func input_func_ptr{nullptr};
 
 // int ControllerId,
 // name Key,
@@ -94,28 +88,32 @@ static void* __fastcall hook_input_func(
         void* edx,
         PropTraits<UIntProperty>::Value controller,
         PropTraits<UNameProperty>::Value key,
-        EInputEvent event,
+        PropTraits<UByteProperty>::Value event,
         PropTraits<UFloatProperty>::Value amount_depressed,
         PropTraits<UBoolProperty>::Value is_gamepad
 ) {
-    // - NOTE -
-    // This should probably hook a function further up the stack as this one gets called in a
-    // loop resulting in multiple events for the same key. 0x009355B1 is a strong candidate for
-    // this.
+    // - NOTE - above means in the stack frame above this or below you if you're egotistical
+    // I would prefer to hook the function just above this however the function is very sensitive
+    // to stack changes and always ends up crashing. The best I could get was making it not crash on
+    // one call and that was with __declspec(naked) and inline assembly.
+    //
+    // For future reference the function above (0x009355B1) has a signature equal to:
+    // ; return 0x01 is a return constant probably a bool?
+    // int __thiscall(void*   this,
+    //                int32_t param_1, // Unused
+    //                int32_t param_2, // Unused
+    //                int32_t controller,
+    //                FName   key,     // index, number
+    //                uint8_t event,   // +3 padding most likely
+    //                float   amount_depressed)
     //
 
-    enum EInputEvent_ : EInputEvent {
-        IE_Pressed,     // 0
-        IE_Released,    // 1
-        IE_Repeat,      // 2
-        IE_DoubleClick, // 3
-        IE_Axis,        // 4
-        IE_MAX          // 5
-    };
     static std::unordered_map<FName, EInputEvent> previous_event_map{};
 
-    // Don't fire multiple events of the same type (even for those that really should be able to)
-    if (previous_event_map.contains(key) && previous_event_map[key] == event) {
+    // Don't fire multiple events of the same type (unless its a repeat event)
+    if (previous_event_map.contains(key)
+        && event != IE_Repeat
+        && previous_event_map[key] == event) {
         return input_func_ptr(
                 ecx,
                 edx,
@@ -126,11 +124,17 @@ static void* __fastcall hook_input_func(
                 is_gamepad
         );
     }
-    previous_event_map[key] = event;
-    dispatch_key_events(key, event);
+    previous_event_map[key] = static_cast<EInputEvent>(event);
+    dispatch_key_events(key, static_cast<EInputEvent>(event));
 
     return input_func_ptr(ecx, edx, controller, key, event, amount_depressed, is_gamepad);
 }
+
+Pattern<80> INPUT_FUN_SIG{ // probably not a bitcoin miner
+        "83 EC 1C 8B 44 24 20 8B 54 24 24 89 04 24 8B 44 24 28 F3 0F 10 44 24 30 89 44 24 08 33"
+        "C0 39 44 24 34 6A 00 0F 95 C0 89 54 24 08 8A 54 24 30 88 54 24 10 8B 11 8B 92 F4 00 00"
+        "00 C7 44 24 1C 00 00 00 00 89 44 24 18 8D 44 24 04 50 8D 41 3C 50"
+};
 
 }
 } // keybinds
