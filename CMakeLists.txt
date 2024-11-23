@@ -75,15 +75,30 @@ endif ()
 
 # This assumes the directory structure for the sdk-install-dir is the required i.e., Binaries/Plugins
 find_package(Python3 REQUIRED)
-add_custom_target(
-        package_willow_mod_manager
-        COMMAND
-        ${Python3_EXECUTABLE}
-        ./create_zip_release.py
-        # The literal quotes are not actually required.
+
+set(WMM_PY_PACKAGE_ARGS
         --version "\"${CMAKE_PROJECT_VERSION}\""
         --install-dir "\"${WMM_INSTALL_ROOT}\""
         --build-type "\"${CMAKE_BUILD_TYPE}\""
         --output-dir "\"${CMAKE_CURRENT_SOURCE_DIR}/build\""
+)
+
+add_custom_target(
+        package_willow_mod_manager
+        COMMAND
+        "${Python3_EXECUTABLE}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/scripts/create_zip_release.py"
+        ${WMM_PY_PACKAGE_ARGS}
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+)
+
+add_custom_command(
+        TARGET package_willow_mod_manager
+        POST_BUILD
+        COMMAND
+        "${Python3_EXECUTABLE}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/scripts/post_create_zip_release.py"
+        ${WMM_PY_PACKAGE_ARGS}
+        WORKING_DIRECTORY
+        "${CMAKE_CURRENT_SOURCE_DIR}"
 )

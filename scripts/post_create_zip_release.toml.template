@@ -1,0 +1,13 @@
+[borderlands]
+# Root directory containing Binaries ./Borderlands
+# i.e., G:\Games\BL1_Modding\Borderlands_141_UDK\Borderlands
+root_dir=""
+
+# Paths relative to root_dir to delete whether its a directory or a literal file
+delete_list=[
+    'Mods',
+    'Binaries/Plugins'
+]
+
+# When true it will not delete, extract, or do anything except print path information
+dry_run=true
