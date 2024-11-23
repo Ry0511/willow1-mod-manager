@@ -3,6 +3,7 @@
 .vscode
 
 scripts/.idea
+scripts/__pycache__
 scripts/post_create_zip_release.toml
 
 src/.idea/
