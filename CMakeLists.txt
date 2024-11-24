@@ -39,7 +39,7 @@ install(
         DIRECTORY ./vendor/pyunrealsdk/stubs/unrealsdk
         DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
-install(FILES "unrealsdk.env" DESTINATION ${WMM_INSTALL_ROOT}/Binaries/Plugins)
+install(FILES "unrealsdk.toml" DESTINATION ${WMM_INSTALL_ROOT}/Binaries/Plugins)
 
 install( # Install contents excluding some file types since
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/
