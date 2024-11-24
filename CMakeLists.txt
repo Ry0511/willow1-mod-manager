@@ -5,6 +5,8 @@ project(
         DESCRIPTION "BL1 PythonSDK Mod Manager"
 )
 
+add_custom_target(${PROJECT_NAME})
+
 ################################################################################
 # DEPENDENCIES
 ################################################################################
@@ -17,8 +19,12 @@ add_subdirectory(./vendor/pyunrealsdk)
 # Need to exclude this since we don't want its install dependencies
 add_subdirectory(./vendor/plugin_loader EXCLUDE_FROM_ALL)
 
+add_dependencies(${PROJECT_NAME} proxy_dsound pyunrealsdk)
+
+# Probably should make this process a function
 pyunrealsdk_add_module(_input_base src/input_base/_input_base.cpp)
 install(TARGETS _input_base DESTINATION ${WMM_INSTALL_ROOT}/Mods/input_base)
+add_dependencies(${PROJECT_NAME} _input_base)
 
 ################################################################################
 # PACKAGING MOD MANAGER
@@ -26,9 +32,6 @@ install(TARGETS _input_base DESTINATION ${WMM_INSTALL_ROOT}/Mods/input_base)
 
 # Honestly, might be a better idea to avoid the install stuff and just have a build target which
 #  packages everything we need. Then just give that to the packager script.
-
-add_custom_target(${PROJECT_NAME})
-add_dependencies(${PROJECT_NAME} proxy_dsound pyunrealsdk)
 
 install(TARGETS proxy_dsound RUNTIME DESTINATION ${WMM_INSTALL_ROOT}/Binaries)
 install(
