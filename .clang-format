@@ -1,0 +1,22 @@
+---
+Language:                       Cpp
+BasedOnStyle:                   Chromium
+
+# New Additions
+BinPackArguments           : false
+BinPackParameters          : false
+PenaltyBreakOpenParenthesis: 50
+LambdaBodyIndentation      : OuterScope
+AlignAfterOpenBracket      : BlockIndent
+
+AllowShortBlocksOnASingleLine:  Empty
+BreakBeforeBinaryOperators:     NonAssignment
+ColumnLimit:                    100
+IndentWidth:                    4
+InsertBraces:                   true
+SortIncludes:                   CaseInsensitive
+IncludeCategories:
+  - Regex:                      '".*pch\.h"'
+    Priority:                   -1
+    CaseSensitive:              true
+---
