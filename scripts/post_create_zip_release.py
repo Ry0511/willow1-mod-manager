@@ -34,6 +34,14 @@ def validate_files(cfg: SimpleNamespace) -> bool:
     for p in cfg.bl_delete_list:
         print(f"[WARNING] Path is on delete list; '{p}'")
 
+    # For sanity reasons enforce absolute & existence
+    for p in cfg.bl_install_mods:
+        if not path.isabs(p) or not path.isdir(p):
+            print(f"[WARNING] Install mods directory not absolute or doesn't exist; 'p'")
+            valid_files = False
+        else:
+            print(f"[INFO] Install Mod: '{p}'")
+
     return valid_files
 
 
@@ -44,6 +52,7 @@ def parse_toml(cfg: SimpleNamespace, toml_file) -> None:
         cfg.bl_delete_list = list(map(lambda p: path.join(cfg.bl_root_dir, path.normpath(p)),
                                       toml['borderlands']['delete_list']))
         cfg.bl_dry_run = bool(toml['borderlands']['dry_run'])
+        cfg.bl_install_mods = toml['borderlands']['install_mods']
 
 
 if __name__ == "__main__":
@@ -85,3 +94,18 @@ if __name__ == "__main__":
     print(cfg.bl_root_dir)
     with zipfile.ZipFile(cfg.zip_file_out) as zip_file:
         zip_file.extractall(cfg.bl_root_dir)
+
+    # NOTE: this assumes `Mods` is a direct child of bl_root_dir
+    mods_dir = path.join(cfg.bl_root_dir, 'Mods')
+    if not path.isdir(mods_dir):
+        print(f"Mods directory doesn't exist after extracting; '{mods_dir}'")
+        exit(1)
+
+    for p in cfg.bl_install_mods:
+
+        dest = mods_dir
+        if not p.endswith('/') and not p.endswith('\\'):
+            dest = path.join(dest, path.basename(p))
+
+        print(f"[INFO] ~ Installing Mod; '{p}' into '{dest}'")
+        shutil.copytree(p, dest, dirs_exist_ok=True)

@@ -9,5 +9,15 @@ delete_list=[
     'Binaries/Plugins'
 ]
 
+# Absolute paths to mods that should be installed after unpackaging; Recursively copied into ~/Mods/
+#  trailing / will only copy the contents of the directory without it will also include the
+#  directory; i.e.,
+#
+#    in='src/foo'  dest='~/Mods/foo/file_in_foo'
+#    in='src/foo/' dest='~/Mods/file_in_foo'
+install_mods=[
+    # 'G:/Absolute/Path/To/Mod'
+]
+
 # When true it will not delete, extract, or do anything except print path information
 dry_run=true
