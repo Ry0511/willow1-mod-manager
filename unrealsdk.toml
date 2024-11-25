@@ -19,10 +19,10 @@ log_all_calls_file="unrealsdk.calls.tsv"
 [unrealsdk.bl1]
 
 # Prints to the console when a package is loaded
-log_load_package=true
+log_load_package=false
 
 # Generally speaking using the pythonsdk in the editor is not recommended atm
-log_save_package=true
+log_save_package=false
 
 # Alternative to `locking_process_event` however not as crash-resistant; Probably going to be removed.
 locking_console_write=false
