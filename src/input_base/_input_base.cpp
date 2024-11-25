@@ -62,10 +62,14 @@ void dispatch_key_events(const FName& key, EInputEvent event, bool is_gameplay) 
         auto [it, end] = callback_map.equal_range(key);
         for (; it != end; ++it) {
             const ElemType& info = it->second;
-            if (is_gameplay != info->is_gameplay
-                || (info->filter.has_value() && *info->filter == event)) {
+
+            if (is_gameplay != info->is_gameplay) {
                 continue;
             }
+            if (info->filter.has_value() && *info->filter != event) {
+                continue;
+            }
+
             keybinds.push_back(it->second);
         }
     };
@@ -93,7 +97,6 @@ void dispatch_key_events(const FName& key, EInputEvent event, bool is_gameplay) 
             if (!key_str) {
                 key_str = py::str(std::string(key));
             }
-            args.append(std::wstring{key});
         }
         auto ret = info->callback(*args);
 
@@ -141,7 +144,7 @@ static void* __fastcall hook_input_func(
     bool is_gameplay = ecx->Class == gameplay_input_class;
     dispatch_key_events(key, event, is_gameplay);
 
-    // idk what this returns, returning (void*)1 doesn't seem to do anything
+    // idk what this returns; seems to be 0x0 most of the time
     return input_func_ptr(ecx, edx, controller, key, event, amount_depressed, is_gamepad);
 }
 
