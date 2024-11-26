@@ -45,6 +45,7 @@ install(
         DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
 install(FILES "unrealsdk.toml" DESTINATION ${WMM_INSTALL_ROOT}/Binaries/Plugins)
+install(FILES "LICENSE" DESTINATION ${WMM_INSTALL_ROOT}/Mods)
 
 install( # Install contents excluding some file types since
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/
