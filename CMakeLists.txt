@@ -5,6 +5,8 @@ project(
         DESCRIPTION "BL1 PythonSDK Mod Manager"
 )
 
+# TODO: Cleanup this file.
+
 add_custom_target(${PROJECT_NAME})
 
 ################################################################################
@@ -47,11 +49,24 @@ install(FILES "unrealsdk.toml" DESTINATION ${WMM_INSTALL_ROOT}/Binaries/Plugins)
 install( # Install contents excluding some file types since
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/
         DESTINATION ${WMM_INSTALL_ROOT}/Mods
+        PATTERN "example_mod" EXCLUDE
         PATTERN ".idea" EXCLUDE
         PATTERN ".git" EXCLUDE
         PATTERN ".gitignore" EXCLUDE
         PATTERN ".github" EXCLUDE
 )
+
+option(WMM_INSTALL_EXAMPLE_MOD OFF)
+if (WMM_INSTALL_EXAMPLE_MOD)
+    install(
+            DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/example_mod"
+            DESTINATION "${WMM_INSTALL_ROOT}/Mods"
+            PATTERN ".idea" EXCLUDE
+            PATTERN ".git" EXCLUDE
+            PATTERN ".gitignore" EXCLUDE
+            PATTERN ".github" EXCLUDE
+    )
+endif ()
 
 option(WMM_INSTALL_STUBS "Installs the stubs for implicit/builtin libraries" ON)
 
