@@ -33,16 +33,21 @@ def enable_keybind(self: KeybindType) -> None:
     if self.key is None or self.callback is None:
         return
 
+    actual_key = self.key
+
+    if self.key.upper() in ("ANY", "ANY_KEY", "ANYKEY"):
+        actual_key = None
+
     if self.event_filter is None:
         handle = register_keybind(
-            self.key,
+            actual_key,
             self.event_filter,
             True,
             cast(KeybindCallback_Event, self.callback)
         )
     else:
         handle = register_keybind(
-            self.key,
+            actual_key,
             self.event_filter,
             True,
             cast(KeybindCallback_NoArgs, self.callback)
