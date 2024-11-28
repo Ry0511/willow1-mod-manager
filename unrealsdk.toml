@@ -1,5 +1,4 @@
 [unrealsdk]
-
 # Provides a console window where information is displayed
 external_console=false
 
@@ -16,8 +15,8 @@ locking_process_event=true
 # After enabling `unrealsdk::hook_manager::log_all_calls`, the file to calls are logged to.
 log_all_calls_file="unrealsdk.calls.tsv"
 
-[unrealsdk.bl1]
 
+[unrealsdk.bl1]
 # Prints to the console when a package is loaded
 log_load_package=false
 
@@ -30,7 +29,21 @@ locking_console_write=false
 # The rate at which we will try to hook the init function
 init_func_poll_rate_ms=20
 
-# Don't modify unless you know what you're doing
+
+[modloader]
+# Full stacktrace when exceptions occur during mod loading
+full_trace=false
+
+# Full logging during mod loading
+full_logging=false
+
+# Additional Directories to load mods from; Best to use absolute paths.
+additional_mod_dirs=[
+    # "G:/Games/BL1_Modding/bl1_mods_dev"
+]
+
+
 [pyunrealsdk]
+# Best not to modify these
 init_script="../Mods/__main__.py"
 pyexec_root="../Mods"
