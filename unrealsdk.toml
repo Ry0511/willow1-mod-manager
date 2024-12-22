@@ -1,49 +1,54 @@
 [unrealsdk]
 # Provides a console window where information is displayed
-external_console=false
+external_console = false
 
 # Default console key; if already set this is ignored.
-console_key="Tilde"
+console_key = "Tilde"
 
 # If true, locks simultaneous ProcessEvent calls from different threads. This is used both for hooks
 # and for calling unreal functions.
 # When true, if external code must take care with it's own locks. If external code attempts to
 # acquire a lock inside a hook, while at the same time trying to call an unreal function on the
 # thread which holds that lock, the system will deadlock.
-locking_process_event=true
+locking_process_event = true
 
 # After enabling `unrealsdk::hook_manager::log_all_calls`, the file to calls are logged to.
-log_all_calls_file="unrealsdk.calls.tsv"
+log_all_calls_file = "unrealsdk.calls.tsv"
 
 
 [unrealsdk.bl1]
+# - NOTE -
+# Not everything in this section will remain and some may be removed in future versions.
+
 # Prints to the console when a package is loaded
-log_load_package=false
+log_load_package = false
 
 # Generally speaking using the pythonsdk in the editor is not recommended atm
-log_save_package=false
+log_save_package = false
 
 # Alternative to `locking_process_event` however not as crash-resistant; Probably going to be removed.
-locking_console_write=false
+locking_console_write = false
 
 # The rate at which we will try to hook the init function
-init_func_poll_rate_ms=20
+init_func_poll_rate_ms = 20
 
 
 [modloader]
 # Full stacktrace when exceptions occur during mod loading
-full_trace=false
+full_trace = false
 
 # Full logging during mod loading
-full_logging=false
+full_logging = false
 
-# Additional Directories to load mods from; Best to use absolute paths.
-additional_mod_dirs=[
-    # "G:/Games/BL1_Modding/bl1_mods_dev"
+# Additional Directories to load mods from; Best to use absolute paths. Additionally, all mod
+#  directories are added to the path before any mods are imported. This allows you to import and
+#  use mods from directories that may not be available otherwise.
+additional_mod_dirs = [
+    # "G:/Games/BL1_Modding/bl1_sdk_mods/src/py",  # / or \\ can be used \ alone can not.
 ]
 
 
 [pyunrealsdk]
 # Best not to modify these
-init_script="../Mods/__main__.py"
-pyexec_root="../Mods"
+init_script = "../Mods/__main__.py"
+pyexec_root = "../Mods"
