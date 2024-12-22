@@ -15,13 +15,15 @@ import importlib
 import sys
 from pathlib import Path
 
-import unrealsdk  # noqa
+import unrealsdk  # noqa; We want this imported even if we don't use it directly
 from unrealsdk import logging, config
+
+from typing import *
 
 
 # TODO: Currently debugpy is not setup/available to use.
 
-def get_cfg(key: str, default: any) -> any:
+def get_cfg(key: str, default: Any) -> Any:
     node = config
     for part in key.split("."):
         try:
@@ -50,10 +52,30 @@ def get_mod_directories() -> list[Path]:
     root_mods_dir = Path(__file__).parent.absolute()
     all_dirs = [root_mods_dir]
 
-    for p in map(Path, get_cfg("modloader.additional_mod_dirs", [])):
-        if not p.is_dir():
-            log(f"Invalid directory: '{p}'")
-        all_dirs.append(p)
+    for mod_dir in get_cfg("modloader.additional_mod_dirs", list()):
+
+        p = Path(mod_dir)
+        resolved: Union[Path, None] = None
+
+        try:
+            resolved = p.resolve()
+        except Exception as ex:  # noqa
+            log(f"Failed to resolve path '{p}': {ex}")
+
+        if resolved is None:
+            continue
+
+        if not p.is_absolute():
+            log(
+                f"Path '{str(p)}' is not an absolute path;"
+                f" Resolves to '{str(resolved)}'",
+                logging.dev_warning
+            )
+
+        if not resolved.is_dir():
+            log(f"Path is not a directory; '{str(resolved)}'")
+            continue
+        all_dirs.append(resolved)
 
     return all_dirs
 
