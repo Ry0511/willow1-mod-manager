@@ -17,8 +17,7 @@ from pathlib import Path
 
 import unrealsdk  # noqa; We want this imported even if we don't use it directly
 from unrealsdk import logging, config
-
-from typing import *
+from typing import Any, Union
 
 
 # TODO: Currently debugpy is not setup/available to use.
@@ -96,15 +95,20 @@ def is_valid_mod_path(p: Path) -> bool:
 
 
 def load_mods_from_dir(mod_dir: Path) -> None:
+    mods_loaded = 0
+    mods_failed = 0
     for p in mod_dir.iterdir():
         if not is_valid_mod_path(p):
-            logging.info(f"Invalid Mod Path: '{p}'")
+            log(f"Invalid mod path '{p}'; You can ignore this", logging.dev_warning)
             continue
 
         module = p.name
         try:
             importlib.import_module(module)
+            mods_loaded += 1
+
         except Exception as err:
+            mods_failed += 1
             logging.error(f"Failed to load python module: '{module}'")
             tb = traceback.extract_tb(err.__traceback__)
 
@@ -113,6 +117,10 @@ def load_mods_from_dir(mod_dir: Path) -> None:
 
             logging.error("".join(traceback.format_exception_only(err)))
             logging.error("".join(traceback.format_list(tb)))
+
+    log(f"Successfully loaded '{mods_loaded}' mods")
+    if mods_failed > 0:
+        log(f"Failed to load '{mods_failed}' mods", logging.error)
 
 
 ################################################################################
@@ -131,6 +139,7 @@ for p in all_mod_directories:
 import input_base  # noqa
 from mods_base import mod_list
 
+# Load all user mods
 for p in all_mod_directories:
     load_mods_from_dir(p)
 
