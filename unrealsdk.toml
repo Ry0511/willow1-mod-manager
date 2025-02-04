@@ -50,5 +50,5 @@ additional_mod_dirs = [
 
 [pyunrealsdk]
 # Best not to modify these
-init_script = "../Mods/__main__.py"
-pyexec_root = "../Mods"
+init_script = "../sdk_mods/__main__.py"
+pyexec_root = "../sdk_mods"

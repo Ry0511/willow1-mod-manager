@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
 project(
         willow_mod_manager
-        VERSION 1.0.0
+        VERSION 1.1.0
         DESCRIPTION "BL1 PythonSDK Mod Manager"
 )
 
@@ -14,6 +14,9 @@ add_custom_target(${PROJECT_NAME})
 # Base install directory is */Binaries/Plugins however we need to place things above this for a
 #  correct directory layout
 get_filename_component(WMM_INSTALL_ROOT "${CMAKE_INSTALL_PREFIX}/../../" ABSOLUTE)
+set(WMM_INSTALL_DIR_MODS "${WMM_INSTALL_ROOT}/sdk_mods")
+set(WMM_INSTALL_DIR_BINARIES "${WMM_INSTALL_ROOT}/Binaries")
+set(WMM_INSTALL_DIR_PLUGINS "${WMM_INSTALL_ROOT}/Binaries/Plugins")
 
 # Vendor dependencies
 add_subdirectory(./vendor/pyunrealsdk)
@@ -23,16 +26,12 @@ add_dependencies(${PROJECT_NAME} proxy_dsound pyunrealsdk)
 
 # Probably should make this process a function
 pyunrealsdk_add_module(_input_base src/input_base/_input_base.cpp)
-install(TARGETS _input_base DESTINATION ${WMM_INSTALL_ROOT}/Mods/input_base)
+install(TARGETS _input_base DESTINATION ${WMM_INSTALL_DIR_MODS}/input_base)
 add_dependencies(${PROJECT_NAME} _input_base)
 
 ################################################################################
 # | PACKAGING MOD MANAGER |
 ################################################################################
-
-set(WMM_INSTALL_DIR_MODS "${WMM_INSTALL_ROOT}/Mods")
-set(WMM_INSTALL_DIR_BINARIES "${WMM_INSTALL_ROOT}/Binaries")
-set(WMM_INSTALL_DIR_PLUGINS "${WMM_INSTALL_ROOT}/Binaries/Plugins")
 
 install(TARGETS proxy_dsound RUNTIME DESTINATION ${WMM_INSTALL_DIR_BINARIES})
 install(DIRECTORY "./vendor/pyunrealsdk/stubs/"
@@ -60,8 +59,8 @@ install( # Install contents excluding some file types since
 # | OPTIONAL INSTALL ARTIFACTS |
 ################################################################################
 
-option(WMM_INSTALL_EXAMPLE_MOD "Installs the example mod into the ./Mods directory" OFF)
-option(WMM_INSTALL_STUBS "Installs stubs for pyunrealsdk and unrealsdk (./src and ./Mods)" ON)
+option(WMM_INSTALL_EXAMPLE_MOD "Installs the example mod into the ./sdk_mods directory" OFF)
+option(WMM_INSTALL_STUBS "Installs stubs for pyunrealsdk and unrealsdk (./src and ./sdk_mods)" ON)
 
 if (WMM_INSTALL_EXAMPLE_MOD)
     install(
