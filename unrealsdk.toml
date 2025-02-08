@@ -5,12 +5,12 @@ external_console = false
 # Default console key; if already set this is ignored.
 console_key = "Tilde"
 
-# If true, locks simultaneous ProcessEvent calls from different threads. This is used both for hooks
-# and for calling unreal functions.
+# If true, locks simultaneous unreal function calls from different threads. This lock is held both
+# during hooks and when you manually call unreal functions.
 # When true, if external code must take care with it's own locks. If external code attempts to
 # acquire a lock inside a hook, while at the same time trying to call an unreal function on the
 # thread which holds that lock, the system will deadlock.
-locking_process_event = true
+locking_function_calls = true
 
 # After enabling `unrealsdk::hook_manager::log_all_calls`, the file to calls are logged to.
 log_all_calls_file = "unrealsdk.calls.tsv"
@@ -25,9 +25,6 @@ log_load_package = false
 
 # Generally speaking using the pythonsdk in the editor is not recommended atm
 log_save_package = false
-
-# Alternative to `locking_process_event` however not as crash-resistant; Probably going to be removed.
-locking_console_write = false
 
 # The rate at which we will try to hook the init function
 init_func_poll_rate_ms = 20
