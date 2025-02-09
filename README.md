@@ -2,16 +2,12 @@
 
 #### PythonSDK Mod manager for Borderlands 1.
 
-- - -
-
 # Preface
 
 ## This will not work for the Enhanced version of the game
 
 The SDK may be flagged as a virus by some antivirus programs. If this happens, you will need to 
 add an exception to prevent it from being blocked or removed.
-
-- - -
 
 # Installation
 
@@ -46,8 +42,6 @@ additional_mod_dirs = [
 ]
 ```
 
-- - -
-
 # Changelog
 
 ## v1.1.0
@@ -60,8 +54,6 @@ additional_mod_dirs = [
 - Main mods directory has been renamed from `Mods` to `sdk_mods`
 - Mod loader would log `Invalid Mod Path` excessively
 
-- - -
-
 ## v1.0.0
 
 ### Changes
@@ -69,10 +61,6 @@ additional_mod_dirs = [
 - Main mods directory is `/Borderlands/Mods/`
 - The input system `input_base` is now native C/C++ module
 
-- - -
-
 ## v0.0.0
 
 Initial release; didn't even have a repo for the mod manager :sadge:
-
-- - -
