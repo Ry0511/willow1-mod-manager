@@ -98,6 +98,13 @@ def load_mods_from_dir(mod_dir: Path) -> None:
     mods_loaded = 0
     mods_failed = 0
     for p in mod_dir.iterdir():
+
+        p: Path = p
+
+        if p.name.lower() == "input_base":
+            log(f"Skipping input base '{p}' this directory can be deleted now since keybinds replaced it")
+            continue
+
         if not is_valid_mod_path(p):
             log(f"Invalid mod path '{p}'; You can ignore this", logging.dev_warning)
             continue
