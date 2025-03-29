@@ -19,7 +19,7 @@
         "rhs": ""
       },
       "generator": "Ninja",
-      "toolchainFile": "vendor/pyunrealsdk/common_cmake/clang-x86.cmake"
+      "toolchainFile": "common_cmake/clang-x86.cmake"
     },
     {
       "name": "_clang_x64",
@@ -30,7 +30,7 @@
         "rhs": ""
       },
       "generator": "Ninja",
-      "toolchainFile": "vendor/pyunrealsdk/common_cmake/clang-x64.cmake"
+      "toolchainFile": "common_cmake/clang-x64.cmake"
     },
     {
       "name": "_clang_cross_x86",
@@ -40,7 +40,7 @@
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
-      "toolchainFile": "vendor/pyunrealsdk/common_cmake/clang-cross-x86.cmake"
+      "toolchainFile": "common_cmake/clang-cross-x86.cmake"
     },
     {
       "name": "_clang_cross_x64",
@@ -50,7 +50,7 @@
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
-      "toolchainFile": "vendor/pyunrealsdk/common_cmake/clang-cross-x64.cmake"
+      "toolchainFile": "common_cmake/clang-cross-x64.cmake"
     },
     {
       "name": "_llvm_mingw_x86",
@@ -60,7 +60,7 @@
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
-      "toolchainFile": "vendor/pyunrealsdk/common_cmake/llvm-i686-w64-mingw32.cmake"
+      "toolchainFile": "common_cmake/llvm-i686-w64-mingw32.cmake"
     },
     {
       "name": "_llvm_mingw_x64",
@@ -70,7 +70,7 @@
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
-      "toolchainFile": "vendor/pyunrealsdk/common_cmake/llvm-x86_64-w64-mingw32.cmake"
+      "toolchainFile": "common_cmake/llvm-x86_64-w64-mingw32.cmake"
     },
     {
       "name": "_mingw_x86",
@@ -80,7 +80,7 @@
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
-      "toolchainFile": "vendor/pyunrealsdk/common_cmake/i686-w64-mingw32.cmake"
+      "toolchainFile": "common_cmake/i686-w64-mingw32.cmake"
     },
     {
       "name": "_mingw_x64",
@@ -90,7 +90,7 @@
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
-      "toolchainFile": "vendor/pyunrealsdk/common_cmake/x86_64-w64-mingw32.cmake"
+      "toolchainFile": "common_cmake/x86_64-w64-mingw32.cmake"
     },
     {
       "name": "_msvc",
@@ -101,7 +101,7 @@
         "rhs": "Windows"
       },
       "generator": "Ninja",
-      "toolchainFile": "vendor/pyunrealsdk/common_cmake/msvc.cmake"
+      "toolchainFile": "common_cmake/msvc.cmake"
     },
     {
       "name": "_x86",
