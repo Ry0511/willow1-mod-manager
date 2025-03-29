@@ -96,16 +96,16 @@ if __name__ == "__main__":
         zip_file.extractall(cfg.bl_root_dir)
 
     # NOTE: this assumes `Mods` is a direct child of bl_root_dir
-    mods_dir = path.join(cfg.bl_root_dir, 'Mods')
-    if not path.isdir(mods_dir):
-        print(f"Mods directory doesn't exist after extracting; '{mods_dir}'")
-        exit(1)
+    # mods_dir = path.join(cfg.bl_root_dir, 'sdk_mods')
+    # if not path.isdir(mods_dir):
+    #     print(f"Mods directory doesn't exist after extracting; '{mods_dir}'")
+    #     exit(1)
 
-    for p in cfg.bl_install_mods:
-
-        dest = mods_dir
-        if not p.endswith('/') and not p.endswith('\\'):
-            dest = path.join(dest, path.basename(p))
-
-        print(f"[INFO] ~ Installing Mod; '{p}' into '{dest}'")
-        shutil.copytree(p, dest, dirs_exist_ok=True)
+    # for p in cfg.bl_install_mods:
+    #
+    #     dest = mods_dir
+    #     if not p.endswith('/') and not p.endswith('\\'):
+    #         dest = path.join(dest, path.basename(p))
+    #
+    #     print(f"[INFO] ~ Installing Mod; '{p}' into '{dest}'")
+    #     shutil.copytree(p, dest, dirs_exist_ok=True)
