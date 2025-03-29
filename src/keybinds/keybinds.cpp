@@ -87,17 +87,24 @@ void dispatch_key_events(const FName& key, EInputEvent event, bool is_gameplay) 
     py::object key_str;
     for (const std::shared_ptr<KeybindInfo>& info : keybinds) {
         py::list args{};
+
+        // If there is an event filter append the event arg
         if (!info->filter.has_value()) {
             if (!event_type) {
                 event_type = input_event_enum(event);
             }
             args.append(event_type);
         }
+
+        // If any key then append the key string
         if (info->is_any_key) {
             if (!key_str) {
                 key_str = py::str(std::string(key));
             }
+            args.append(key_str);
         }
+
+        // Call the callback
         auto ret = info->callback(*args);
 
         // This only skips the callbacks in this chain not the games callbacks
@@ -105,8 +112,6 @@ void dispatch_key_events(const FName& key, EInputEvent event, bool is_gameplay) 
             return;
         }
     }
-
-    return;
 }
 
 // ############################################################################//
@@ -127,7 +132,7 @@ typedef void*(__fastcall* on_input_event_func)(
 
 on_input_event_func input_func_ptr{nullptr};
 
-static void* __fastcall hook_input_func(
+void* __fastcall hook_input_func(
     UObject* ecx,
     void* edx,
     PropTraits<UIntProperty>::Value controller,
@@ -150,11 +155,28 @@ static void* __fastcall hook_input_func(
 
 // probably not a bitcoin miner
 Pattern<80> INPUT_FUN_SIG{
-    "83 EC 1C 8B 44 24 20 8B 54 24 24 89 04 24 8B 44 24 28 F3 0F 10 44 24 30 "
-    "89 44 24 08 33"
-    "C0 39 44 24 34 6A 00 0F 95 C0 89 54 24 08 8A 54 24 30 88 54 24 10 8B 11 "
-    "8B 92 F4 00 00"
-    "00 C7 44 24 1C 00 00 00 00 89 44 24 18 8D 44 24 04 50 8D 41 3C 50"
+    "83 EC 1C"
+    "8B 44 24 20"
+    "8B 54 24 24"
+    "89 04 24"
+    "8B 44 24 28"
+    "F3 0F 10 44 24 30"
+    "89 44 24 08"
+    "33 C0"
+    "39 44 24 34"
+    "6A 00"
+    "0F 95 C0"
+    "89 54 24 08"
+    "8A 54 24 30"
+    "88 54 24 10"
+    "8B 11"
+    "8B 92 F4 00 00 00"
+    "C7 44 24 1C 00 00 00 00"
+    "89 44 24 18"
+    "8D 44 24 04"
+    "50"
+    "8D 41 3C"
+    "50"
 };
 
 }  // namespace
@@ -164,7 +186,7 @@ Pattern<80> INPUT_FUN_SIG{
 //  | PYBIND |
 // ############################################################################//
 
-PYBIND11_MODULE(_input_base, m) {
+PYBIND11_MODULE(keybinds, m) {
     using namespace unrealsdk::unreal;
     using namespace unrealsdk::memory;
     using namespace keybinds;
@@ -173,7 +195,7 @@ PYBIND11_MODULE(_input_base, m) {
         keybinds::INPUT_FUN_SIG,
         keybinds::hook_input_func,
         &keybinds::input_func_ptr,
-        "input_base_hook_input_func"
+        "__keybinds_hook_input_func"
     );
 
     m.def(

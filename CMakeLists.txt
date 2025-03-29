@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 project(
         willow_mod_manager
-        VERSION 1.1.0
+        VERSION 1.2.0
         DESCRIPTION "BL1 PythonSDK Mod Manager"
 )
 
@@ -25,9 +25,9 @@ add_subdirectory(./vendor/plugin_loader EXCLUDE_FROM_ALL)
 add_dependencies(${PROJECT_NAME} proxy_dsound pyunrealsdk)
 
 # Probably should make this process a function
-pyunrealsdk_add_module(_input_base src/input_base/_input_base.cpp)
-install(TARGETS _input_base DESTINATION ${WMM_INSTALL_DIR_MODS}/input_base)
-add_dependencies(${PROJECT_NAME} _input_base)
+pyunrealsdk_add_module(keybinds src/keybinds/keybinds.cpp)
+install(TARGETS keybinds DESTINATION ${WMM_INSTALL_DIR_MODS}/keybinds)
+add_dependencies(${PROJECT_NAME} keybinds)
 
 ################################################################################
 # | PACKAGING MOD MANAGER |

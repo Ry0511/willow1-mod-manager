@@ -4,7 +4,7 @@ from typing import cast
 from mods_base import KeybindType
 from mods_base.keybinds import KeybindCallback_Event, KeybindCallback_NoArgs
 from mods_base.mod_list import base_mod
-from ._input_base import register_keybind, deregister_keybind
+from .keybinds import register_keybind, deregister_keybind
 
 ################################################################################
 # | MODS METADATA |
@@ -16,7 +16,7 @@ __all__: tuple[str, ...] = (
     "__version_info__",
 )
 
-__version_info__: tuple[int, int] = (1, 1)
+__version_info__: tuple[int, int] = (2, 1)
 __version__: str = f"{__version_info__[0]}.{__version_info__[1]}"
 __author__: str = "-Ry"
 
@@ -30,12 +30,12 @@ __author__: str = "-Ry"
 def enable_keybind(self: KeybindType) -> None:
     self.is_enabled = True
 
-    if self.key is None or self.callback is None:
+    if self.callback is None:
         return
 
     actual_key = self.key
 
-    if self.key.upper() in ("ANY", "ANY_KEY", "ANYKEY"):
+    if self.key is None or self.key.upper() in ("ANY", "ANY_KEY", "ANYKEY"):
         actual_key = None
 
     if self.event_filter is None:
@@ -87,4 +87,4 @@ def rebind_keybind(self: KeybindType, new_key: str | None) -> None:
 
 KeybindType._rebind = rebind_keybind
 
-base_mod.components.append(base_mod.ComponentInfo("Input Base", __version__))
+base_mod.components.append(base_mod.ComponentInfo("Keybinds", __version__))

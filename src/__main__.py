@@ -136,7 +136,7 @@ for p in all_mod_directories:
         log(f"Adding directory to search path: '{p}'")
         sys.path.append(str(p))
 
-import input_base  # noqa
+import keybinds  # noqa
 from mods_base import mod_list
 
 # Load all user mods
