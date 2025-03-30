@@ -6,41 +6,35 @@
 # also uses the name Willow Mod Manager. The project can be found at: https://github.com/Ry0511/willow1-mod-manager
 # However, this link may become stale at somepoint depending on future developments.
 #
-# You should have received a copy of the GNU General Public License along with the
-# Willow1 Mod Manager; If not, see <https://www.gnu.org/licenses/>.
+# You should have received a copy of the LGPL3 along with the Willow1 Mod Manager.
+# If not you can find it here: <https://www.gnu.org/licenses/>.
 ################################################################################
 
 import traceback
 import importlib
 import sys
+
+from typing import cast, Any, Union, Iterable, Mapping
 from pathlib import Path
 
-import unrealsdk  # noqa; We want this imported even if we don't use it directly
+import unrealsdk  # noqa
 from unrealsdk import logging, config
-from typing import Any, Union
 
 
 # TODO: Currently debugpy is not setup/available to use.
 
-def get_cfg(key: str, default: Any) -> Any:
-    node = config
+def get_cfg(key: str, default: Any | None = None) -> Any:
+    node: Mapping[str, Any] = config
     for part in key.split("."):
-        try:
-            node = node[part]
-        except KeyError:
+        if part not in node:
             return default
+        else:
+            node = node[part]
     return node
 
 
 # If true logs the entire trace; when false only the most recent call is logged.
 FULL_TRACEBACKS: bool = get_cfg("modloader.full_trace", False)
-FULL_LOGGING: bool = get_cfg("modloader.full_logging", False)
-
-
-def log(msg: str, fn: callable = logging.info):
-    if not FULL_LOGGING:
-        return
-    fn(msg)
 
 
 ################################################################################
@@ -51,7 +45,11 @@ def get_mod_directories() -> list[Path]:
     root_mods_dir = Path(__file__).parent.absolute()
     all_dirs = [root_mods_dir]
 
-    for mod_dir in get_cfg("modloader.additional_mod_dirs", list()):
+    extra_dirs = get_cfg("modloader.additional_mod_dirs")
+    if extra_dirs is None or len(extra_dirs) == 0:
+        return all_dirs
+
+    for mod_dir in extra_dirs:
 
         p = Path(mod_dir)
         resolved: Union[Path, None] = None
@@ -59,20 +57,18 @@ def get_mod_directories() -> list[Path]:
         try:
             resolved = p.resolve()
         except Exception as ex:  # noqa
-            log(f"Failed to resolve path '{p}': {ex}")
+            logging.warning(f"Failed to resolve path '{p}': {ex}")
 
         if resolved is None:
             continue
 
         if not p.is_absolute():
-            log(
+            logging.warning(
                 f"Path '{str(p)}' is not an absolute path;"
-                f" Resolves to '{str(resolved)}'",
-                logging.dev_warning
-            )
+                f" Resolves to '{str(resolved)}'")
 
         if not resolved.is_dir():
-            log(f"Path is not a directory; '{str(resolved)}'")
+            logging.warning(f"Additional mod directory is not a directory; '{str(resolved)}'")
             continue
         all_dirs.append(resolved)
 
@@ -83,8 +79,16 @@ def is_valid_mod_path(p: Path) -> bool:
     if not p.is_dir():
         return False
 
+    name = p.name
     # Skip these directories
-    if p.name in (".", "__pycache__", "mods_base", "input_base", "pyunrealsdk", "unrealsdk"):
+    if name.startswith(".") or name in (
+            "__pycache__",
+            "mods_base",
+            "input_base",
+            "keybinds",
+            "pyunrealsdk",
+            "unrealsdk"
+    ):
         return False
 
     content: list[Path] = list(map(lambda x: x.name, p.iterdir()))
@@ -94,19 +98,17 @@ def is_valid_mod_path(p: Path) -> bool:
     return True
 
 
-def load_mods_from_dir(mod_dir: Path) -> None:
+def load_mods_from_dir(mod_dir: Path) -> (int, int):
     mods_loaded = 0
     mods_failed = 0
-    for p in mod_dir.iterdir():
-
-        p: Path = p
+    for p in cast(Iterable[Path], mod_dir.iterdir()):
 
         if p.name.lower() == "input_base":
-            log(f"Skipping input base '{p}' this directory can be deleted now since keybinds replaced it")
+            logging.info(f"Skipping input base '{p.name}' this directory can be"
+                         f" deleted since it was renamed to 'keybinds'")
             continue
 
         if not is_valid_mod_path(p):
-            log(f"Invalid mod path '{p}'; You can ignore this", logging.dev_warning)
             continue
 
         module = p.name
@@ -125,9 +127,7 @@ def load_mods_from_dir(mod_dir: Path) -> None:
             logging.error("".join(traceback.format_exception_only(err)))
             logging.error("".join(traceback.format_list(tb)))
 
-    log(f"Successfully loaded '{mods_loaded}' mods")
-    if mods_failed > 0:
-        log(f"Failed to load '{mods_failed}' mods", logging.error)
+    return mods_loaded, mods_failed
 
 
 ################################################################################
@@ -140,7 +140,7 @@ def load_mods_from_dir(mod_dir: Path) -> None:
 all_mod_directories = get_mod_directories()
 for p in all_mod_directories:
     if p not in sys.path:
-        log(f"Adding directory to search path: '{p}'")
+        logging.info(f"Adding directory to search path: '{p}'")
         sys.path.append(str(p))
 
 import keybinds  # noqa
@@ -151,10 +151,3 @@ for p in all_mod_directories:
     load_mods_from_dir(p)
 
 mod_list.register_base_mod()
-
-# Explicitly remove these, not entirely required but might as well.
-del all_mod_directories
-del FULL_LOGGING
-del FULL_TRACEBACKS
-del log
-del get_cfg
