@@ -30,12 +30,13 @@ __author__: str = "-Ry"
 def enable_keybind(self: KeybindType) -> None:
     self.is_enabled = True
 
-    if self.callback is None:
+    # We need to check if the key is None since that is an 'Unbound' key
+    if self.key is None or self.callback is None:
         return
 
     actual_key = self.key
 
-    if self.key is None or self.key.upper() in ("ANY", "ANY_KEY", "ANYKEY"):
+    if self.key.upper() in ("ANY", "ANY_KEY", "ANYKEY"):
         actual_key = None
 
     if self.event_filter is None:
