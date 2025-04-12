@@ -1,8 +1,16 @@
 [unrealsdk]
-# Provides a console window where information is displayed
+# If true, creates an external console window mirroring what is written to the game's console.
+# Always enabled in debug builds.
 external_console = false
 
-# Default console key; if already set this is ignored.
+# The file to write log messages to, relative to the dll.
+log_file = "unrealsdk.log"
+
+# Changes the default logging level used in the unreal console; ERR, WARN, INFO, DWRN, MISC
+console_log_level = "INFO"
+
+# The default console key set when one is not already bound. If a key is already bound via standard
+# unreal facilities, this is ignored.
 console_key = "Tilde"
 
 # If true, locks simultaneous unreal function calls from different threads. This lock is held both
@@ -15,6 +23,9 @@ locking_function_calls = true
 # After enabling `unrealsdk::hook_manager::log_all_calls`, the file to calls are logged to.
 log_all_calls_file = "unrealsdk.calls.tsv"
 
+# vtable index for change events
+uobject_post_edit_change_property_vf_index = -1
+uobject_post_edit_change_chain_property_vf_index = -1
 
 [unrealsdk.bl1]
 # - NOTE -
@@ -28,7 +39,6 @@ log_save_package = false
 
 # The rate at which we will try to hook the init function
 init_func_poll_rate_ms = 20
-
 
 [modloader]
 # Full stacktrace when exceptions occur during mod loading
