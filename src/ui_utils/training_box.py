@@ -11,16 +11,16 @@ from mods_base import EInputEvent, bind_all_hooks, get_pc, hook
 
 if TYPE_CHECKING:
     from enum import auto
-
     from unrealsdk.unreal._uenum import UnrealEnum  # pyright: ignore[reportMissingModuleSource]
+
 
     class EBackButtonScreen(UnrealEnum):
         CS_None = auto()
+        CS_Character = auto()
+        CS_Inventory = auto()
         CS_MissionLog = auto()
         CS_Map = auto()
-        CS_Inventory = auto()
         CS_Skills = auto()
-        CS_Challenges = auto()
         CS_MAX = auto()
 
 else:

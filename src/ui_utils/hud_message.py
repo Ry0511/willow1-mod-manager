@@ -5,7 +5,7 @@ from mods_base import get_pc
 __all__: tuple[str, ...] = ("show_hud_message",)
 
 
-def show_hud_message( title: str, msg: str, duration: float = 2.5, pc = None) -> None:
+def show_hud_message(title: str, msg: str, duration: float = 2.5, pc=None) -> None:
     """
     Displays a short, non-blocking message in the main in game hud.
 
@@ -30,11 +30,11 @@ def show_hud_message( title: str, msg: str, duration: float = 2.5, pc = None) ->
 
     hud_movie.ClearTrainingText(0)
     hud_movie.AddTrainingText(
-        0, 
-        msg, 
-        title, 
-        duration, 
-        unrealsdk.make_struct("Color",R=255,G=255,B=255,A=100),
+        0,
+        msg,
+        title,
+        duration,
+        unrealsdk.make_struct("Color", R=255, G=255, B=255, A=100),
         "",
         False,
         0.0,

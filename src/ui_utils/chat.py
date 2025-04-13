@@ -1,15 +1,12 @@
-from datetime import datetime
-from types import EllipsisType
-
 import unrealsdk
 
 from mods_base import get_pc
 
-#bl1 doesnt have timestamp in the chat
+
+# bl1 doesnt have timestamp in the chat
 def show_chat_message(
     message: str,
-    user: str | None = None,
-    timestamp: datetime | None | EllipsisType = ...,
+    user: str | None = None
 ) -> None:
     """
     Prints a message to chat - with protection against the offline crash.
@@ -29,5 +26,9 @@ def show_chat_message(
     if user is None:
         user = pc.PlayerReplicationInfo.PlayerName
 
-    get_pc().myHUD.GetHUDMovie().AddChatText(0, f"{user}: {message}", get_pc().myHUD.DefaultMessageDuration, unrealsdk.make_struct("Color",R=255,G=255,B=255,A=100), get_pc().PlayerReplicationInfo)
-
+    (pc.myHUD.GetHUDMovie().AddChatText(
+        0,
+        f"{user}: {message}",
+        get_pc().myHUD.DefaultMessageDuration,
+        unrealsdk.make_struct("Color", R=255, G=255, B=255, A=100),
+        get_pc().PlayerReplicationInfo))

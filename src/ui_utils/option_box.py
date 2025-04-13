@@ -12,7 +12,6 @@ from mods_base import EInputEvent, bind_all_hooks, get_pc, hook
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
 
-
 __all__: tuple[str, ...] = (
     "OptionBox",
     "OptionBoxButton",
@@ -165,7 +164,7 @@ class OptionBox:
             self._pages = [Page(buttons=self.buttons, **kwargs)]
         else:
             self._pages = [
-                Page(buttons=[*self.buttons[i : i + 3], self._next_page], **kwargs)
+                Page(buttons=[*self.buttons[i: i + 3], self._next_page], **kwargs)
                 for i in range(0, len(self.buttons), 3)
             ]
 

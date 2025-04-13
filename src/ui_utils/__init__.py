@@ -26,5 +26,4 @@ __version_info__: tuple[int, int] = (1, 2)
 __version__: str = f"{__version_info__[0]}.{__version_info__[1]}"
 __author__: str = "bl-sdk"
 
-
 base_mod.components.append(base_mod.ComponentInfo("UI Utils", __version__))
