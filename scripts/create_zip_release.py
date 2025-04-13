@@ -12,6 +12,7 @@ class BuildType(Enum):
     Empty = ""
     Debug = "Debug"
     Release = "Release"
+    RelWithDebInfo = "RelWithDebInfo"
     Unknown = "Custom"
 
 
