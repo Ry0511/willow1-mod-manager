@@ -23,29 +23,16 @@ locking_function_calls = true
 # After enabling `unrealsdk::hook_manager::log_all_calls`, the file to calls are logged to.
 log_all_calls_file = "unrealsdk.calls.tsv"
 
-# vtable index for change events
-uobject_post_edit_change_property_vf_index = -1
-uobject_post_edit_change_chain_property_vf_index = -1
+# vtable index for change events; I eyeballed these, probably wrong; PreEditChange = 0x11
+uobject_post_edit_change_property_vf_index = 19
+# uobject_post_edit_change_chain_property_vf_index = 21
 
-[unrealsdk.bl1]
-# - NOTE -
-# Not everything in this section will remain and some may be removed in future versions.
-
-# Prints to the console when a package is loaded
-log_load_package = false
-
-# Generally speaking using the pythonsdk in the editor is not recommended atm
-log_save_package = false
-
-# The rate at which we will try to hook the init function
-init_func_poll_rate_ms = 20
+[mod_manager]
+display_version = "v1.2"
 
 [modloader]
 # Full stacktrace when exceptions occur during mod loading
 full_trace = false
-
-# Full logging during mod loading
-full_logging = false
 
 # Additional Directories to load mods from; Best to use absolute paths. Additionally, all mod
 #  directories are added to the path before any mods are imported. This allows you to import and
@@ -54,8 +41,6 @@ additional_mod_dirs = [
     # "G:/Games/BL1_Modding/bl1_sdk_mods/src/py",  # / or \\ can be used \ alone can not.
 ]
 
-
 [pyunrealsdk]
-# Best not to modify these
 init_script = "../sdk_mods/__main__.py"
 pyexec_root = "../sdk_mods"
