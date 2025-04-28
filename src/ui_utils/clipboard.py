@@ -1,88 +1,98 @@
-import ctypes as ct
-import ctypes.wintypes as wt
+from unrealsdk import logging
 
-OpenClipboard = ct.windll.user32.OpenClipboard
-OpenClipboard.argtypes = (wt.HWND,)
-OpenClipboard.restype = wt.BOOL
+try:
+    import ctypes as ct
+    import ctypes.wintypes as wt
 
-CloseClipboard = ct.windll.user32.CloseClipboard
-CloseClipboard.argtypes = ()
-CloseClipboard.restype = wt.BOOL
+    OpenClipboard = ct.windll.user32.OpenClipboard
+    OpenClipboard.argtypes = (wt.HWND,)
+    OpenClipboard.restype = wt.BOOL
 
-EmptyClipboard = ct.windll.user32.EmptyClipboard
-EmptyClipboard.argtypes = ()
-EmptyClipboard.restype = wt.BOOL
+    CloseClipboard = ct.windll.user32.CloseClipboard
+    CloseClipboard.argtypes = ()
+    CloseClipboard.restype = wt.BOOL
 
-GetClipboardData = ct.windll.user32.GetClipboardData
-GetClipboardData.argtypes = (wt.UINT,)
-GetClipboardData.restype = wt.HANDLE
+    EmptyClipboard = ct.windll.user32.EmptyClipboard
+    EmptyClipboard.argtypes = ()
+    EmptyClipboard.restype = wt.BOOL
 
-SetClipboardData = ct.windll.user32.SetClipboardData
-SetClipboardData.argtypes = (wt.UINT, wt.HANDLE)
-SetClipboardData.restype = wt.HANDLE
+    GetClipboardData = ct.windll.user32.GetClipboardData
+    GetClipboardData.argtypes = (wt.UINT,)
+    GetClipboardData.restype = wt.HANDLE
 
-GlobalLock = ct.windll.kernel32.GlobalLock
-GlobalLock.argtypes = (wt.HANDLE,)
-GlobalLock.restype = wt.LPVOID
+    SetClipboardData = ct.windll.user32.SetClipboardData
+    SetClipboardData.argtypes = (wt.UINT, wt.HANDLE)
+    SetClipboardData.restype = wt.HANDLE
 
-GlobalUnlock = ct.windll.kernel32.GlobalUnlock
-GlobalUnlock.argtypes = (wt.HGLOBAL,)
-GlobalUnlock.restype = wt.BOOL
+    GlobalLock = ct.windll.kernel32.GlobalLock
+    GlobalLock.argtypes = (wt.HANDLE,)
+    GlobalLock.restype = wt.LPVOID
 
-GlobalAlloc = ct.windll.kernel32.GlobalAlloc
-GlobalAlloc.argtypes = (wt.UINT, ct.c_size_t)
-GlobalAlloc.restype = wt.HGLOBAL
+    GlobalUnlock = ct.windll.kernel32.GlobalUnlock
+    GlobalUnlock.argtypes = (wt.HGLOBAL,)
+    GlobalUnlock.restype = wt.BOOL
+
+    GlobalAlloc = ct.windll.kernel32.GlobalAlloc
+    GlobalAlloc.argtypes = (wt.UINT, ct.c_size_t)
+    GlobalAlloc.restype = wt.HGLOBAL
+
+    CF_UNICODETEXT = 13
+    GMEM_MOVEABLE = 0x2
 
 
-CF_UNICODETEXT = 13
-GMEM_MOVEABLE = 0x2
+    def clipboard_copy(contents: str) -> None:
+        """
+        Copies a string to the clipboard.
+
+        Args:
+            contents: The contents to copy.
+        """
+        if OpenClipboard(None):
+            EmptyClipboard()
+
+            # Don't need to do anything more if we have an empty string
+            if contents:
+                data = contents.encode("utf-16le") + b"\0\0"
+                size = len(data)
+
+                handle = GlobalAlloc(GMEM_MOVEABLE, size)
+                if handle:
+                    locked_handle = GlobalLock(handle)
+                    if locked_handle:
+                        ct.memmove(locked_handle, data, size)
+                        GlobalUnlock(handle)
+
+                        SetClipboardData(CF_UNICODETEXT, handle)
+
+            CloseClipboard()
 
 
-def clipboard_copy(contents: str) -> None:
-    """
-    Copies a string to the clipboard.
+    def clipboard_paste() -> str | None:
+        """
+        Pastes a string from the clipboard.
 
-    Args:
-        contents: The contents to copy.
-    """
-    if OpenClipboard(None):
-        EmptyClipboard()
+        Returns:
+            The string in the clipboard, or None if it doesn't contain a string.
+        """
+        contents: str | None = None
 
-        # Don't need to do anything more if we have an empty string
-        if contents:
-            data = contents.encode("utf-16le") + b"\0\0"
-            size = len(data)
-
-            handle = GlobalAlloc(GMEM_MOVEABLE, size)
+        if OpenClipboard(None):
+            handle = GetClipboardData(CF_UNICODETEXT)
             if handle:
                 locked_handle = GlobalLock(handle)
                 if locked_handle:
-                    ct.memmove(locked_handle, data, size)
-                    GlobalUnlock(handle)
+                    contents = ct.wstring_at(locked_handle)
 
-                    SetClipboardData(CF_UNICODETEXT, handle)
+                GlobalUnlock(handle)
 
-        CloseClipboard()
+            CloseClipboard()
+
+        return contents
+
+except ImportError:  # This only happens if we are in debug mode
+    def clipboard_copy(_1: str) -> None:
+        logging.info("Clipboard Copy Failed...")
 
 
-def clipboard_paste() -> str | None:
-    """
-    Pastes a string from the clipboard.
-
-    Returns:
-        The string in the clipboard, or None if it doesn't contain a string.
-    """
-    contents: str | None = None
-
-    if OpenClipboard(None):
-        handle = GetClipboardData(CF_UNICODETEXT)
-        if handle:
-            locked_handle = GlobalLock(handle)
-            if locked_handle:
-                contents = ct.wstring_at(locked_handle)
-
-            GlobalUnlock(handle)
-
-        CloseClipboard()
-
-    return contents
+    def clipboard_paste() -> str | None:
+        logging.info("Clipboard Pase Failed...")
