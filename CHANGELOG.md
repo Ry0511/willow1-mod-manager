@@ -2,10 +2,12 @@
 # v1.2.0
 
 - input_base has been renamed to keybinds to keep things inline with other games
+- Mods Base
+  - URL's have now been setup for so you should be prompted when new releases are available... 
+     You can also just look in the discord.
 - Console Mod Menu
   - You can now bind a button via a button press
-- Fixed Internal `UObject` class layout
-  - This fixes `WeakPointers`
+- Fixed WeakPointers not working due to incorrect UObject layout
 - ui_utils is now directly apart of the mod manager thanks to RedxYeti
 - Known Issue: Hooking network functions can cause a crash; This is being looked into.
 
