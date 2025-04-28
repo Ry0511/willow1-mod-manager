@@ -54,7 +54,7 @@ def enable_keybind(self: KeybindType) -> None:
             cast(KeybindCallback_NoArgs, self.callback)
         )
 
-    self._native_handle = handle
+    setattr(self, "_native_handle", handle)
 
 
 KeybindType.enable = enable_keybind
@@ -69,7 +69,7 @@ def disable_keybind(self: KeybindType) -> None:
         return
 
     deregister_keybind(handle)
-    self._native_handle_ = None
+    setattr(self, "_native_handle", handle)
 
 
 KeybindType.disable = disable_keybind
