@@ -1,13 +1,18 @@
 
 # v1.2.0
 
-- Fuck
-- You
+- input_base has been renamed to keybinds to keep things inline with other games
+- Console Mod Menu
+  - You can now bind a button via a button press
+- Fixed Internal `UObject` class layout
+  - This fixes `WeakPointers`
+- ui_utils is now directly apart of the mod manager thanks to RedxYeti
+- Known Issue: Hooking network functions can cause a crash; This is being looked into.
 
 # v1.1.0
 
 - Changed where the PythonSDK is downloaded from [willow1-mod-manager](https://github.com/Ry0511/willow1-mod-manager/releases)
-- Fixed a bug where CallFunction was not being serialised which caused crashes
+- Fixed a bug where CallFunction was not being synchronised which caused crashes
 - Fixed main mod directory name to `sdk_mods` was `Mods`
 - Fixed excessive logging from mod loader leading to confusion
 
