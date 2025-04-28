@@ -23,8 +23,8 @@ locking_function_calls = true
 # After enabling `unrealsdk::hook_manager::log_all_calls`, the file to calls are logged to.
 log_all_calls_file = "unrealsdk.calls.tsv"
 
-# vtable index for change events; I eyeballed these, probably wrong; PreEditChange = 0x11
 uobject_post_edit_change_property_vf_index = 19
+# Haven't found this index yet. Its probably 20 or 21 but idk
 # uobject_post_edit_change_chain_property_vf_index = 21
 
 [mod_manager]
